@@ -1,10 +1,12 @@
-import React from 'react';
-import type { Column, Task } from '../../types/kanban';
+import React, { useState } from 'react';
+import type { Column, Task, Id } from '../../types/kanban';
 import { TaskCard } from '../task/TaskCard';
 
 interface KanbanColumnProps {
   column: Column;
   tasks: Task[];
+  onTaskMove: (taskId: Id, targetColumnId: Id) => void;
+  onTaskDelete: (taskId: Id) => void;
 }
 
 const themeStyles = {
@@ -16,13 +18,42 @@ const themeStyles = {
   violet: 'border-t-violet-500',
 };
 
-export const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, tasks }) => {
+export const KanbanColumn: React.FC<KanbanColumnProps> = ({ 
+  column, 
+  tasks, 
+  onTaskMove,
+  onTaskDelete
+}) => {
+  const [isDragOver, setIsDragOver] = useState(false);
   const accentColor = themeStyles[column.theme] || themeStyles.slate;
 
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault(); // Necessary to allow dropping
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragOver(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    const taskId = e.dataTransfer.getData('text/plain');
+    if (taskId) {
+      onTaskMove(taskId, column.id);
+    }
+  };
+
   return (
-    <div className="flex-shrink-0 w-80 flex flex-col h-full">
+    <div 
+      className={`shrink-0 w-80 flex flex-col h-full transition-colors rounded-xl ${isDragOver ? 'bg-slate-100/50 ring-2 ring-indigo-200' : ''}`}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+    >
       {/* Header */}
-      <div className={`bg-white p-4 rounded-xl shadow-sm border-t-4 ${accentColor} mb-4 flex items-center justify-between`}>
+      <div className={`bg-white p-4 rounded-xl shadow-sm border-t-4 ${accentColor} mb-4 flex items-center justify-between shrink-0`}>
         <div className="flex items-center gap-2">
           <h2 className="font-bold text-slate-800 text-sm uppercase tracking-wide">
             {column.title}
@@ -31,22 +62,21 @@ export const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, tasks }) => 
             {tasks.length}
           </span>
         </div>
-        <button className="text-slate-400 hover:text-indigo-600 transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-          </svg>
-        </button>
       </div>
 
       {/* Task List (Droppable Area) */}
       <div className="flex-1 overflow-y-auto px-1 pb-4 space-y-3">
         {tasks.map((task) => (
-          <TaskCard key={task.id} task={task} />
+          <TaskCard 
+            key={task.id} 
+            task={task} 
+            onDelete={() => onTaskDelete(task.id)}
+          />
         ))}
         
         {tasks.length === 0 && (
-          <div className="h-24 border-2 border-dashed border-slate-200 rounded-xl flex items-center justify-center text-slate-400 text-sm italic">
-            No tasks yet
+          <div className="h-24 border-2 border-dashed border-slate-200 rounded-xl flex items-center justify-center text-slate-400 text-sm italic pointer-events-none">
+            Drop tasks here
           </div>
         )}
       </div>

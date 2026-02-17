@@ -47,3 +47,23 @@ Ao iniciar sem dados, o board deve apresentar:
     *   Opacidade reduzida no item arrastado.
     *   Realce na zona de destino (drop zone).
 *   **Performance:** Animações fluidas (60fps).
+
+## 6. Arquitetura Frontend (Componentes)
+
+### 6.1. Mapa de Componentes
+| Componente | Nível | Responsabilidade |
+| :--- | :--- | :--- |
+| **`KanbanBoard`** | Organismo | Container principal. Gerencia o contexto do Drag & Drop (DnDContext), renderiza a lista de Colunas e orquestra eventos. |
+| **`KanbanColumn`** | Molécula | Lista vertical (Drop Zone). Renderiza o cabeçalho e a lista de Tarefas filtradas. |
+| **`TaskCard`** | Molécula | Cartão da tarefa (Draggable). Exibe título, prioridade e tags. |
+| **`TaskModal`** | Organismo | Modal para criação e edição. Contém formulários. |
+
+### 6.2. Estrutura de Pastas (`src/components`)
+*   **`board/`**: `KanbanBoard.tsx`, `KanbanColumn.tsx`
+*   **`task/`**: `TaskCard.tsx`, `TaskModal.tsx`
+*   **`ui/`**: Componentes genéricos (`Button`, `Input`, `Badge`, `Modal`).
+
+### 6.3. Fluxo de Dados
+*   **Estado Global:** Hook customizado `useKanban` (Colunas + Tarefas + Funções de Mutação).
+*   **Direção:** Unidirecional (Parent -> Child).
+*   **Eventos:** Callbacks sobem via props (ex: `onDelete`, `onMove`).

@@ -1,9 +1,7 @@
-// Global TypeScript definitions
-
 export interface BaseEntity {
   id: string;
   createdAt: string;
-  updatedAt: string;
+  updatedAt?: string;
 }
 
 export type Status = 'idle' | 'loading' | 'succeeded' | 'failed';

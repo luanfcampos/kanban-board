@@ -1,49 +1,73 @@
 import React from 'react';
+import { KanbanBoard } from './components/board/KanbanBoard';
+import type { Column, Task } from './types/kanban';
+
+// Mock Data for UI Development
+const MOCK_COLUMNS: Column[] = [
+  { id: 'todo', title: 'To Do', theme: 'slate' },
+  { id: 'in-progress', title: 'In Progress', theme: 'blue' },
+  { id: 'review', title: 'Review', theme: 'amber' },
+  { id: 'done', title: 'Done', theme: 'green' },
+];
+
+const MOCK_TASKS: Task[] = [
+  {
+    id: '1',
+    columnId: 'todo',
+    title: 'Research Competitors',
+    description: 'Analyze top 3 competitors in the market and document features.',
+    priority: 'medium',
+    tags: ['Research', 'Product'],
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: '2',
+    columnId: 'todo',
+    title: 'Setup Project Repo',
+    priority: 'high',
+    tags: ['Devops'],
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: '3',
+    columnId: 'in-progress',
+    title: 'Design System Implementation',
+    description: 'Create basic atoms: Buttons, Inputs, Typography.',
+    priority: 'high',
+    tags: ['Design', 'Dev'],
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: '4',
+    columnId: 'done',
+    title: 'Initial Meeting',
+    priority: 'low',
+    tags: ['Meeting'],
+    createdAt: new Date().toISOString(),
+  },
+];
 
 const App: React.FC = () => {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-slate-50">
-      <div className="max-w-md w-full bg-white rounded-xl shadow-lg overflow-hidden border border-slate-100 transform hover:scale-105 transition-transform duration-300">
-        <div className="bg-gradient-to-r from-indigo-500 to-purple-500 p-6">
-          <h1 className="text-2xl font-bold text-white text-center tracking-tight">
-            Kanban Board
-          </h1>
-          <p className="text-indigo-100 text-center text-sm mt-1 font-medium opacity-90">
-            Ambiente Local
-          </p>
-        </div>
-        
-        <div className="p-8">
-          <div className="flex items-center justify-center mb-6">
-            <div className="h-16 w-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-2xl shadow-sm">
-              <span role="img" aria-label="check">✓</span>
-            </div>
+    <div className="h-screen w-screen bg-slate-50 flex flex-col">
+      {/* App Header */}
+      <header className="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between shrink-0">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">
+            K
           </div>
-          
-          <h2 className="text-xl font-bold text-slate-800 text-center mb-2">
-            Etapa 1 Concluída
-          </h2>
-          
-          <p className="text-slate-500 text-center mb-8 text-sm leading-relaxed">
-            Se você está vendo este card estilizado, o Tailwind v4 e o Vite estão configurados corretamente no seu ambiente local.
-          </p>
+          <h1 className="text-xl font-bold text-slate-800 tracking-tight">Kanban Board</h1>
+        </div>
+        <div className="flex gap-4">
+           {/* Placeholder for future header controls */}
+           <div className="w-8 h-8 rounded-full bg-slate-100"></div>
+        </div>
+      </header>
 
-          <div className="space-y-3">
-            <div className="flex items-center text-sm font-medium text-slate-600 bg-slate-50 p-3 rounded-lg border border-slate-100">
-              <span className="w-2.5 h-2.5 bg-blue-500 rounded-full mr-3 shadow-[0_0_8px_rgba(59,130,246,0.5)]"></span>
-              src/main.tsx importado
-            </div>
-            <div className="flex items-center text-sm font-medium text-slate-600 bg-slate-50 p-3 rounded-lg border border-slate-100">
-              <span className="w-2.5 h-2.5 bg-sky-400 rounded-full mr-3 shadow-[0_0_8px_rgba(56,189,248,0.5)]"></span>
-              @import "tailwindcss" funcionando
-            </div>
-            <div className="flex items-center text-sm font-medium text-slate-600 bg-slate-50 p-3 rounded-lg border border-slate-100">
-              <span className="w-2.5 h-2.5 bg-purple-500 rounded-full mr-3 shadow-[0_0_8px_rgba(168,85,247,0.5)]"></span>
-              Estrutura Vite Padrão
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Main Board Area */}
+      <main className="flex-1 overflow-hidden">
+        <KanbanBoard columns={MOCK_COLUMNS} tasks={MOCK_TASKS} />
+      </main>
     </div>
   );
 };

@@ -7,7 +7,7 @@ export interface KanbanColumnProps {
   tasks: Task[];
   onTaskMove: (taskId: Id, targetColumnId: Id) => void;
   onTaskDelete: (taskId: Id) => void;
-  onTaskUpdate: (taskId: Id, updates: Partial<Task>) => void;
+  onEditTask: (task: Task) => void;
   onAddTask: (columnId: Id, title: string) => void;
 }
 
@@ -25,7 +25,7 @@ export const KanbanColumn: React.FC<KanbanColumnProps> = ({
   tasks, 
   onTaskMove,
   onTaskDelete,
-  onTaskUpdate,
+  onEditTask,
   onAddTask
 }) => {
   const [isDragOver, setIsDragOver] = useState(false);
@@ -101,7 +101,7 @@ export const KanbanColumn: React.FC<KanbanColumnProps> = ({
             key={task.id} 
             task={task} 
             onDelete={() => onTaskDelete(task.id)}
-            onUpdate={(updates: Partial<Task>) => onTaskUpdate(task.id, updates)}
+            onClick={onEditTask}
           />
         ))}
         

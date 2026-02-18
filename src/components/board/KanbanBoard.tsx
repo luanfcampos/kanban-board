@@ -29,6 +29,10 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
     }
   };
 
+  const handleAddColumn = () => {
+    alert("Column management features are under construction 🚧");
+  };
+
   return (
     <>
       <div className="flex h-full w-full overflow-x-auto overflow-y-hidden gap-6 p-6 items-start bg-slate-50">
@@ -44,7 +48,10 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
           />
         ))}
         
-        <button className="flex-shrink-0 w-80 h-14 border-2 border-dashed border-slate-300 rounded-xl flex items-center justify-center text-slate-500 font-medium hover:border-indigo-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors cursor-pointer">
+        <button 
+          onClick={handleAddColumn}
+          className="shrink-0 w-80 h-14 border-2 border-dashed border-slate-300 rounded-xl flex items-center justify-center text-slate-500 font-medium hover:border-indigo-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors cursor-pointer"
+        >
           + Add New Column
         </button>
       </div>

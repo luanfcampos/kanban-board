@@ -57,12 +57,12 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onDelete, onClick }) =
         </button>
       </div>
 
-      <h3 className="text-sm font-semibold text-slate-800 mb-1 leading-snug break-words">
+      <h3 className="text-sm font-semibold text-slate-800 mb-1 leading-snug wrap-break-word">
         {task.title}
       </h3>
 
       {task.description && (
-        <p className="text-xs text-slate-500 line-clamp-2 mb-3 break-words">
+        <p className="text-xs text-slate-500 line-clamp-2 mb-3 wrap-break-word">
           {task.description}
         </p>
       )}

@@ -15,11 +15,17 @@ const generateId = () => {
 };
 
 export const useKanban = () => {
+  // Inicialização Lazy: Lê do localStorage apenas na montagem inicial
   const [columns, setColumns] = useState<Column[]>(() => {
     try {
       const saved = localStorage.getItem('kanban-columns');
-      return saved ? JSON.parse(saved) : INITIAL_COLUMNS;
-    } catch {
+      if (!saved) return INITIAL_COLUMNS;
+      
+      const parsed = JSON.parse(saved);
+      // Validação extra para garantir que é um array
+      return Array.isArray(parsed) ? parsed : INITIAL_COLUMNS;
+    } catch (error) {
+      console.error('Failed to parse columns from localStorage:', error);
       return INITIAL_COLUMNS;
     }
   });
@@ -27,18 +33,33 @@ export const useKanban = () => {
   const [tasks, setTasks] = useState<Task[]>(() => {
     try {
       const saved = localStorage.getItem('kanban-tasks');
-      return saved ? JSON.parse(saved) : [];
-    } catch {
+      if (!saved) return [];
+
+      const parsed = JSON.parse(saved);
+      // Validação extra para garantir que é um array
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+      console.error('Failed to parse tasks from localStorage:', error);
       return [];
     }
   });
 
+  // Persistência Reativa: Salva sempre que columns mudar
   useEffect(() => {
-    localStorage.setItem('kanban-columns', JSON.stringify(columns));
+    try {
+      localStorage.setItem('kanban-columns', JSON.stringify(columns));
+    } catch (error) {
+      console.error('Failed to save columns to localStorage:', error);
+    }
   }, [columns]);
 
+  // Persistência Reativa: Salva sempre que tasks mudar
   useEffect(() => {
-    localStorage.setItem('kanban-tasks', JSON.stringify(tasks));
+    try {
+      localStorage.setItem('kanban-tasks', JSON.stringify(tasks));
+    } catch (error) {
+      console.error('Failed to save tasks to localStorage:', error);
+    }
   }, [tasks]);
 
   const createTask = useCallback((columnId: Id, title: string) => {
@@ -64,7 +85,6 @@ export const useKanban = () => {
       }
 
       // Lógica de movimento: Remove da posição atual e adiciona ao final com novo ID de coluna
-      // Isso garante que a tarefa apareça visualmente no final da nova coluna
       const others = prev.filter((t) => t.id !== taskId);
       return [...others, { ...task, columnId: targetColumnId }];
     });

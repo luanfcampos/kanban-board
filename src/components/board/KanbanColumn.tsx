@@ -77,7 +77,7 @@ export const KanbanColumn: React.FC<KanbanColumnProps> = ({
 
   return (
     <div 
-      className={`flex-shrink-0 w-80 flex flex-col h-full transition-all duration-200 rounded-xl ${
+      className={`shrink-0 w-80 flex flex-col h-full transition-all duration-200 rounded-xl ${
         isDragOver ? 'bg-indigo-50 ring-2 ring-indigo-400 ring-inset' : 'bg-transparent'
       }`}
       onDragOver={handleDragOver}
@@ -95,7 +95,7 @@ export const KanbanColumn: React.FC<KanbanColumnProps> = ({
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-1 pb-4 space-y-3 min-h-[100px]">
+      <div className="flex-1 overflow-y-auto px-1 pb-4 space-y-3 min-h-25">
         {tasks.map((task) => (
           <TaskCard 
             key={task.id} 

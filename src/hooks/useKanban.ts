@@ -7,8 +7,14 @@ const INITIAL_COLUMNS: Column[] = [
   { id: 'done', title: 'Done', theme: 'green' },
 ];
 
+const generateId = () => {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  return Date.now().toString(36) + Math.random().toString(36).substring(2);
+};
+
 export const useKanban = () => {
-  // Initialize columns from localStorage or default
   const [columns, setColumns] = useState<Column[]>(() => {
     try {
       const saved = localStorage.getItem('kanban-columns');
@@ -18,7 +24,6 @@ export const useKanban = () => {
     }
   });
 
-  // Initialize tasks from localStorage or empty
   const [tasks, setTasks] = useState<Task[]>(() => {
     try {
       const saved = localStorage.getItem('kanban-tasks');
@@ -28,20 +33,22 @@ export const useKanban = () => {
     }
   });
 
-  // Persist columns changes
   useEffect(() => {
     localStorage.setItem('kanban-columns', JSON.stringify(columns));
   }, [columns]);
 
-  // Persist tasks changes
   useEffect(() => {
     localStorage.setItem('kanban-tasks', JSON.stringify(tasks));
   }, [tasks]);
 
-  const addTask = useCallback((taskData: Omit<Task, 'id' | 'createdAt'>) => {
+  const createTask = useCallback((columnId: Id, title: string) => {
     const newTask: Task = {
-      ...taskData,
-      id: crypto.randomUUID(),
+      id: generateId(),
+      columnId,
+      title,
+      description: '',
+      priority: 'low',
+      tags: [],
       createdAt: new Date().toISOString(),
     };
     setTasks((prev) => [...prev, newTask]);
@@ -68,7 +75,7 @@ export const useKanban = () => {
   return {
     columns,
     tasks,
-    addTask,
+    createTask,
     moveTask,
     deleteTask,
     updateTask,

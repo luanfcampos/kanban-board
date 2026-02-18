@@ -1,27 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import KanbanBoard from './components/board/KanbanBoard';
 import { useKanban } from './hooks/useKanban';
-import type { Priority, Task } from './types/kanban';
 
 const App: React.FC = () => {
-  const { columns, tasks, addTask, moveTask, deleteTask, updateTask } = useKanban();
-
-  // Temporary function to simulate adding tasks
-  const handleAddRandomTask = () => {
-    const priorities: Priority[] = ['low', 'medium', 'high'];
-    const randomPriority = priorities[Math.floor(Math.random() * priorities.length)];
-    
-    // We construct the task data explicitly to match the Omit<Task, 'id' | 'createdAt'> type
-    const newTaskData = {
-      columnId: 'todo',
-      title: `Task ${Math.floor(Math.random() * 1000)}`,
-      description: 'Drag me to another column!',
-      priority: randomPriority,
-      tags: ['Test', 'DnD'],
-    };
-    
-    addTask(newTaskData);
-  };
+  const { columns, tasks, createTask, moveTask, deleteTask, updateTask } = useKanban();
 
   return (
     <div className="h-screen w-screen bg-slate-50 flex flex-col">
@@ -33,12 +15,6 @@ const App: React.FC = () => {
           <h1 className="text-xl font-bold text-slate-800 tracking-tight">Kanban Board</h1>
         </div>
         <div className="flex gap-4">
-           <button 
-             onClick={handleAddRandomTask}
-             className="px-4 py-2 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 text-sm font-semibold rounded-lg transition-colors cursor-pointer"
-           >
-             + Add Random Task
-           </button>
            <div className="w-8 h-8 rounded-full bg-slate-100 border border-slate-200"></div>
         </div>
       </header>
@@ -50,6 +26,7 @@ const App: React.FC = () => {
           onTaskMove={moveTask}
           onTaskDelete={deleteTask}
           onTaskUpdate={updateTask}
+          onAddTask={createTask}
         />
       </main>
     </div>

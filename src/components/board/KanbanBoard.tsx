@@ -8,6 +8,7 @@ interface KanbanBoardProps {
   onTaskMove: (taskId: Id, targetColumnId: Id) => void;
   onTaskDelete: (taskId: Id) => void;
   onTaskUpdate: (taskId: Id, updates: Partial<Task>) => void;
+  onAddTask: (columnId: Id, title: string) => void;
 }
 
 const KanbanBoard: React.FC<KanbanBoardProps> = ({ 
@@ -15,7 +16,8 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
   tasks, 
   onTaskMove,
   onTaskDelete,
-  onTaskUpdate
+  onTaskUpdate,
+  onAddTask
 }) => {
   return (
     <div className="flex h-full w-full overflow-x-auto overflow-y-hidden gap-6 p-6 items-start bg-slate-50">
@@ -27,6 +29,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
           onTaskMove={onTaskMove}
           onTaskDelete={onTaskDelete}
           onTaskUpdate={onTaskUpdate}
+          onAddTask={onAddTask}
         />
       ))}
       

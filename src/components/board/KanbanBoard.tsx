@@ -22,6 +22,13 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
 }) => {
   const [editingTask, setEditingTask] = useState<Task | null>(null);
 
+  const handleDeleteTask = (taskId: Id) => {
+    if (window.confirm('Are you sure you want to delete this task? This action cannot be undone.')) {
+      onTaskDelete(taskId);
+      setEditingTask(null); // Fecha o modal se estiver aberto
+    }
+  };
+
   return (
     <>
       <div className="flex h-full w-full overflow-x-auto overflow-y-hidden gap-6 p-6 items-start bg-slate-50">
@@ -31,7 +38,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
             column={col}
             tasks={tasks.filter((task) => task.columnId === col.id)}
             onTaskMove={onTaskMove}
-            onTaskDelete={onTaskDelete}
+            onTaskDelete={handleDeleteTask}
             onEditTask={(task) => setEditingTask(task)}
             onAddTask={onAddTask}
           />
@@ -50,6 +57,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
           onSave={(taskId, updates) => {
             onTaskUpdate(taskId, updates);
           }}
+          onDelete={handleDeleteTask}
         />
       )}
     </>

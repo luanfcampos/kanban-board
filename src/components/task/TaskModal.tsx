@@ -35,8 +35,10 @@ export const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onClose, onS
   };
 
   const handleDelete = () => {
+    // Não chamamos onClose() aqui. Deixamos o componente pai controlar o fechamento
+    // caso a exclusão seja confirmada e executada com sucesso.
+    // Isso evita fechar o modal se o usuário clicar em "Cancelar" no confirm().
     onDelete(task.id);
-    onClose();
   };
 
   return (

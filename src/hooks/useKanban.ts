@@ -55,11 +55,19 @@ export const useKanban = () => {
   }, []);
 
   const moveTask = useCallback((taskId: Id, targetColumnId: Id) => {
-    setTasks((prev) =>
-      prev.map((task) =>
-        task.id === taskId ? { ...task, columnId: targetColumnId } : task
-      )
-    );
+    setTasks((prev) => {
+      const task = prev.find((t) => t.id === taskId);
+      
+      // Otimização: Se a tarefa não existe ou já está na coluna destino, não faz nada
+      if (!task || task.columnId === targetColumnId) {
+        return prev;
+      }
+
+      // Lógica de movimento: Remove da posição atual e adiciona ao final com novo ID de coluna
+      // Isso garante que a tarefa apareça visualmente no final da nova coluna
+      const others = prev.filter((t) => t.id !== taskId);
+      return [...others, { ...task, columnId: targetColumnId }];
+    });
   }, []);
 
   const deleteTask = useCallback((taskId: Id) => {

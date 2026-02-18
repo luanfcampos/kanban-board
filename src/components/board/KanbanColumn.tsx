@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import type { Column, Task, Id } from '../../types/kanban';
 import { TaskCard } from '../task/TaskCard';
 
-interface KanbanColumnProps {
+export interface KanbanColumnProps {
   column: Column;
   tasks: Task[];
   onTaskMove: (taskId: Id, targetColumnId: Id) => void;
   onTaskDelete: (taskId: Id) => void;
+  onTaskUpdate: (taskId: Id, updates: Partial<Task>) => void;
 }
 
 const themeStyles = {
@@ -22,17 +23,22 @@ export const KanbanColumn: React.FC<KanbanColumnProps> = ({
   column, 
   tasks, 
   onTaskMove,
-  onTaskDelete
+  onTaskDelete,
+  onTaskUpdate
 }) => {
   const [isDragOver, setIsDragOver] = useState(false);
   const accentColor = themeStyles[column.theme] || themeStyles.slate;
 
   const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault(); // Necessary to allow dropping
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
     setIsDragOver(true);
   };
 
-  const handleDragLeave = () => {
+  const handleDragLeave = (e: React.DragEvent) => {
+    if (e.currentTarget.contains(e.relatedTarget as Node)) {
+      return;
+    }
     setIsDragOver(false);
   };
 
@@ -47,13 +53,14 @@ export const KanbanColumn: React.FC<KanbanColumnProps> = ({
 
   return (
     <div 
-      className={`shrink-0 w-80 flex flex-col h-full transition-colors rounded-xl ${isDragOver ? 'bg-slate-100/50 ring-2 ring-indigo-200' : ''}`}
+      className={`flex-shrink-0 w-80 flex flex-col h-full transition-all duration-200 rounded-xl ${
+        isDragOver ? 'bg-indigo-50 ring-2 ring-indigo-400 ring-inset' : 'bg-transparent'
+      }`}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
-      {/* Header */}
-      <div className={`bg-white p-4 rounded-xl shadow-sm border-t-4 ${accentColor} mb-4 flex items-center justify-between shrink-0`}>
+      <div className={`bg-white p-4 rounded-xl shadow-sm border-t-4 ${accentColor} mb-4 flex items-center justify-between shrink-0 pointer-events-none`}>
         <div className="flex items-center gap-2">
           <h2 className="font-bold text-slate-800 text-sm uppercase tracking-wide">
             {column.title}
@@ -64,19 +71,19 @@ export const KanbanColumn: React.FC<KanbanColumnProps> = ({
         </div>
       </div>
 
-      {/* Task List (Droppable Area) */}
-      <div className="flex-1 overflow-y-auto px-1 pb-4 space-y-3">
+      <div className="flex-1 overflow-y-auto px-1 pb-4 space-y-3 min-h-[150px]">
         {tasks.map((task) => (
           <TaskCard 
             key={task.id} 
             task={task} 
             onDelete={() => onTaskDelete(task.id)}
+            onUpdate={(updates: Partial<Task>) => onTaskUpdate(task.id, updates)}
           />
         ))}
         
         {tasks.length === 0 && (
           <div className="h-24 border-2 border-dashed border-slate-200 rounded-xl flex items-center justify-center text-slate-400 text-sm italic pointer-events-none">
-            Drop tasks here
+            Solte as tarefas aqui
           </div>
         )}
       </div>

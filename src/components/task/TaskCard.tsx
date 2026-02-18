@@ -1,9 +1,10 @@
 import React from 'react';
 import type { Task } from '../../types/kanban';
 
-interface TaskCardProps {
+export interface TaskCardProps {
   task: Task;
   onDelete: () => void;
+  onUpdate: (updates: Partial<Task>) => void;
 }
 
 const priorityConfig = {
@@ -21,20 +22,28 @@ const priorityConfig = {
   },
 };
 
-export const TaskCard: React.FC<TaskCardProps> = ({ task, onDelete }) => {
+export const TaskCard: React.FC<TaskCardProps> = ({ task, onDelete, onUpdate }) => {
   const priority = priorityConfig[task.priority];
 
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData('text/plain', task.id);
     e.dataTransfer.effectAllowed = 'move';
-    // Optional: Set custom drag image or style here
+  };
+
+  const handleTitleClick = (e: React.MouseEvent) => {
+    if (e.detail === 2) { // Double click check
+      const newTitle = window.prompt("Edit task title:", task.title);
+      if (newTitle && newTitle.trim() !== "") {
+        onUpdate({ title: newTitle });
+      }
+    }
   };
 
   return (
     <div 
       draggable
       onDragStart={handleDragStart}
-      className="group bg-white p-4 rounded-xl shadow-sm border border-slate-100 hover:shadow-md hover:border-indigo-100 transition-all cursor-grab active:cursor-grabbing relative"
+      className="group bg-white p-4 rounded-xl shadow-sm border border-slate-100 hover:shadow-md hover:border-indigo-100 transition-all cursor-grab active:cursor-grabbing relative hover:-translate-y-0.5"
     >
       <div className="flex justify-between items-start mb-2">
         <span
@@ -47,7 +56,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onDelete }) => {
             e.stopPropagation();
             onDelete();
           }}
-          className="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity p-1 -mr-2 -mt-2"
+          className="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity p-1 -mr-2 -mt-2 cursor-pointer"
           title="Delete task"
         >
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
@@ -56,7 +65,11 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onDelete }) => {
         </button>
       </div>
 
-      <h3 className="text-sm font-semibold text-slate-800 mb-1 leading-snug">
+      <h3 
+        onClick={handleTitleClick}
+        className="text-sm font-semibold text-slate-800 mb-1 leading-snug cursor-text hover:text-indigo-600 transition-colors"
+        title="Double click to edit title"
+      >
         {task.title}
       </h3>
 

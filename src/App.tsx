@@ -1,23 +1,26 @@
-import React from 'react';
-import { KanbanBoard } from './components/board/KanbanBoard';
+import React, { useState } from 'react';
+import KanbanBoard from './components/board/KanbanBoard';
 import { useKanban } from './hooks/useKanban';
-import type { Priority } from './types/kanban';
+import type { Priority, Task } from './types/kanban';
 
 const App: React.FC = () => {
-  const { columns, tasks, addTask, moveTask, deleteTask } = useKanban();
+  const { columns, tasks, addTask, moveTask, deleteTask, updateTask } = useKanban();
 
   // Temporary function to simulate adding tasks
   const handleAddRandomTask = () => {
     const priorities: Priority[] = ['low', 'medium', 'high'];
     const randomPriority = priorities[Math.floor(Math.random() * priorities.length)];
     
-    addTask({
+    // We construct the task data explicitly to match the Omit<Task, 'id' | 'createdAt'> type
+    const newTaskData = {
       columnId: 'todo',
       title: `Task ${Math.floor(Math.random() * 1000)}`,
       description: 'Drag me to another column!',
       priority: randomPriority,
       tags: ['Test', 'DnD'],
-    });
+    };
+    
+    addTask(newTaskData);
   };
 
   return (
@@ -46,6 +49,7 @@ const App: React.FC = () => {
           tasks={tasks} 
           onTaskMove={moveTask}
           onTaskDelete={deleteTask}
+          onTaskUpdate={updateTask}
         />
       </main>
     </div>
